@@ -10,6 +10,7 @@ import {
   LetExprContext,
   PatternContext,
   Value_nameContext,
+  ValueNameContext,
 } from '../lang/OcamlParser'
 import { OcamlLexer } from '../lang/OcamlLexer'
 import { OcamlVisitor } from '../lang/OcamlVisitor'
@@ -33,6 +34,9 @@ class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements O
     return new BinaryOp(ctx._operator.text, this.visit(ctx._left), this.visit(ctx._right)) 
   }
   visitValue_Name(ctx: Value_nameContext): Id {
+    return new Id(ctx.text) 
+  }
+  visitValueName(ctx: ValueNameContext): Id {
     return new Id(ctx.text) 
   }
   visitPattern(ctx: PatternContext): Id {
@@ -83,7 +87,6 @@ export function parse(input: string) {
       // Here we can change parser.expr() to be parser._typeofstatementtoparse_()
       const tree = parser.expr()
       program = convertOcaml(tree)
-      console.log(program)
       return program
     } catch (error) {
         throw error
