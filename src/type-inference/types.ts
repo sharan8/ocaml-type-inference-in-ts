@@ -39,6 +39,16 @@ class TypeOperator implements AstType {
     }
 }
 
+export interface AstContext {
+    type: AstType
+    env: TypeEnv
+}
+
+class Context implements AstContext {
+    constructor(public type: AstType, public env: TypeEnv) {}
+}
+
+
 const IntegerType = new TypeOperator('int', [ ])
 const BoolType = new TypeOperator('bool', [ ])
 const StringType = new TypeOperator('string', [ ])
@@ -57,31 +67,33 @@ class TypeEnv {
     }
 }
 
-export function analyse(node: AstNode, env: TypeEnv, nonGeneric: Set<AstType>): AstType {
+export function analyse(node: AstNode, env: TypeEnv, nonGeneric: Set<AstType>): AstContext {
     if (node instanceof Id) {
         if (node.type === basicType.reference) {
-            return env.get(node.name, nonGeneric)
+            return new Context(env.get(node.name, nonGeneric), env)
         } else {
-            return env.get(node.type, nonGeneric)
+            return new Context(env.get(node.type, nonGeneric), env)
         }
     }
     else if (node instanceof Apply) {
-        let funcType = analyse(node.func, env, nonGeneric),
-            argType = analyse(node.arg, env, nonGeneric),
+        let c1 = analyse(node.func, env, nonGeneric),
+            funcType = c1.type,
+            c2 = analyse(node.arg, env, nonGeneric),
+            argType = c2.type,
             retType = new TypeVariable()
         unify(FunctionType(argType, retType), funcType)
-        return retType
+        return new Context(retType, env)
     }
     else if (node instanceof Lambda) {
         let argType = new TypeVariable(),
             newEnv = env.extend(node.args, argType),
             newGeneric = new Set(Array.from(nonGeneric).concat(argType)),
-            retType = analyse(node.body, newEnv, newGeneric)
-        return FunctionType(argType, retType)
+            context = analyse(node.body, newEnv, newGeneric)
+        return new Context(FunctionType(argType, context.type), context.env)
     }
     else if (node instanceof Let) {
-        let valType = analyse(node.value, env, nonGeneric),
-            newEnv = env.extend(node.variable, valType)
+        let newContext = analyse(node.value, env, nonGeneric),
+            newEnv = env.extend(node.variable, newContext.type)
         return analyse(node.body, newEnv, nonGeneric)
     }
     else {
@@ -178,6 +190,10 @@ const env = new TypeEnv({
     2: StringType,
 })
 
+let runningEnv = env;
+
 export function run(exp: AstNode) {
-    return analyse(exp, env, new Set())
+    let resultContext = analyse(exp, runningEnv, new Set())
+    runningEnv = resultContext.env
+    return resultContext.type
 }
