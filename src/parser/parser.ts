@@ -24,7 +24,7 @@ import { ParseTree } from 'antlr4ts/tree/ParseTree'
 import { RuleNode } from 'antlr4ts/tree/RuleNode'
 import { ErrorNode } from 'antlr4ts/tree/ErrorNode'
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor'
-import { AstNode, BinaryOp, Conditional, For, Id, Lambda, Let, Sequence, While } from './astType'
+import { AstNode, BinaryOp, Conditional, For, Id, Lambda, Let, Sequence, While } from '../type-inference/nodes'
 
 class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements OcamlVisitor<AstNode> {
   visitValueName(ctx: ValueNameContext): Id {
