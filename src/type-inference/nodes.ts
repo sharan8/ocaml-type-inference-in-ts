@@ -2,8 +2,15 @@
 export interface AstNode {
 }
 
+export enum basicType {
+    integer_literal,
+    bool_literal,
+    string_literal,
+    reference,
+    default,
+}
 export class Id implements AstNode {
-    constructor(public name: string) { }
+    constructor(public name: string, public type: basicType) { }
     toString() { return this.name }
 }
 

@@ -24,20 +24,19 @@ import { ParseTree } from 'antlr4ts/tree/ParseTree'
 import { RuleNode } from 'antlr4ts/tree/RuleNode'
 import { ErrorNode } from 'antlr4ts/tree/ErrorNode'
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor'
-import { AstNode, BinaryOp, Conditional, For, Id, Lambda, Let, Sequence, While } from '../type-inference/nodes'
-
+import { AstNode, basicType, BinaryOp, Conditional, For, Id, Lambda, Let, Sequence, While } from '../type-inference/nodes'
 class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements OcamlVisitor<AstNode> {
   visitValueName(ctx: ValueNameContext): Id {
-    return new Id(ctx.text) 
+    return new Id(ctx.text, basicType.reference) 
   }
   visitConstantInt(ctx: ConstantIntContext): AstNode {
-    return new Id(ctx.text) 
+    return new Id(ctx.text, basicType.integer_literal) 
   }
   visitConstantBool(ctx: ConstantBoolContext): AstNode {
-    return new Id(ctx.text) 
+    return new Id(ctx.text, basicType.bool_literal) 
   }
   visitConstantStr(ctx: ConstantStrContext): AstNode {
-    return new Id(ctx.text) 
+    return new Id(ctx.text, basicType.string_literal) 
   }
 	visitExprInParantheses(ctx: ExprInParanthesesContext): AstNode {
     return this.visit(ctx._inner)
@@ -61,7 +60,7 @@ class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements O
     return this.visitPattern(ctx.pattern())
   }
   visitValue_Name(ctx: Value_nameContext): Id {
-    return new Id(ctx.text) 
+    return new Id(ctx.text, basicType.reference) 
   }
   visitPattern(ctx: PatternContext): Id {
     return this.visitValue_Name(ctx._val);
@@ -70,7 +69,7 @@ class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements O
     return new Let(this.visitPattern(ctx._name), this.visit(ctx._binding), this.visit(ctx._in_context))
   }
   defaultResult(): AstNode {
-    return new Id("Default") 
+    return new Id("Default", basicType.default) 
   }
   visitExpr?: ((ctx: ExprContext) => AstNode) | undefined
   visit(tree: ParseTree): AstNode {
@@ -109,7 +108,7 @@ export function parse(input: string) {
     parser.buildParseTree = true
     try {
       const tree = parser.expr()
-      program = convertOcaml(tree)
+      program = convertExpression(tree)
       return program
     } catch (error) {
         throw error
