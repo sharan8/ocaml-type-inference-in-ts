@@ -585,7 +585,7 @@ export class OcamlParser extends Parser {
 				this.state = 68;
 				this.match(OcamlParser.T__0);
 				this.state = 69;
-				this.expr(0);
+				(_localctx as ExprInParanthesesContext)._inner = this.expr(0);
 				this.state = 70;
 				this.match(OcamlParser.T__1);
 				}
@@ -611,11 +611,11 @@ export class OcamlParser extends Parser {
 				this.state = 74;
 				this.match(OcamlParser.T__27);
 				this.state = 75;
-				this.expr(0);
+				(_localctx as ConditionalExprContext)._condition = this.expr(0);
 				this.state = 76;
 				this.match(OcamlParser.T__28);
 				this.state = 77;
-				this.expr(0);
+				(_localctx as ConditionalExprContext)._consequent = this.expr(0);
 				this.state = 80;
 				this._errHandler.sync(this);
 				switch ( this.interpreter.adaptivePredict(this._input, 4, this._ctx) ) {
@@ -624,7 +624,7 @@ export class OcamlParser extends Parser {
 					this.state = 78;
 					this.match(OcamlParser.T__29);
 					this.state = 79;
-					this.expr(0);
+					(_localctx as ConditionalExprContext)._alternative = this.expr(0);
 					}
 					break;
 				}
@@ -639,11 +639,11 @@ export class OcamlParser extends Parser {
 				this.state = 82;
 				this.match(OcamlParser.T__30);
 				this.state = 83;
-				this.expr(0);
+				(_localctx as WhileLoopContext)._condition = this.expr(0);
 				this.state = 84;
 				this.match(OcamlParser.T__31);
 				this.state = 85;
-				this.expr(0);
+				(_localctx as WhileLoopContext)._body = this.expr(0);
 				this.state = 86;
 				this.match(OcamlParser.T__32);
 				}
@@ -657,11 +657,11 @@ export class OcamlParser extends Parser {
 				this.state = 88;
 				this.match(OcamlParser.T__33);
 				this.state = 89;
-				this.value_name();
+				(_localctx as ForLoopContext)._name = this.value_name();
 				this.state = 90;
 				this.match(OcamlParser.T__6);
 				this.state = 91;
-				this.expr(0);
+				(_localctx as ForLoopContext)._binding = this.expr(0);
 				this.state = 92;
 				_la = this._input.LA(1);
 				if (!(_la === OcamlParser.T__34 || _la === OcamlParser.T__35)) {
@@ -675,11 +675,11 @@ export class OcamlParser extends Parser {
 					this.consume();
 				}
 				this.state = 93;
-				this.expr(0);
+				(_localctx as ForLoopContext)._end = this.expr(0);
 				this.state = 94;
 				this.match(OcamlParser.T__31);
 				this.state = 95;
-				this.expr(0);
+				(_localctx as ForLoopContext)._body = this.expr(0);
 				this.state = 96;
 				this.match(OcamlParser.T__32);
 				}
@@ -699,7 +699,7 @@ export class OcamlParser extends Parser {
 					{
 					{
 					this.state = 99;
-					this.parameter();
+					(_localctx as LambdaContext)._params = this.parameter();
 					}
 					}
 					this.state = 102;
@@ -709,7 +709,7 @@ export class OcamlParser extends Parser {
 				this.state = 104;
 				this.match(OcamlParser.T__23);
 				this.state = 105;
-				this.expr(2);
+				(_localctx as LambdaContext)._body = this.expr(2);
 				}
 				break;
 
@@ -776,6 +776,7 @@ export class OcamlParser extends Parser {
 					case 2:
 						{
 						_localctx = new ExprSemicolonExprContext(new ExprContext(_parentctx, _parentState));
+						(_localctx as ExprSemicolonExprContext)._first = _prevctx;
 						this.pushNewRecursionContext(_localctx, _startState, OcamlParser.RULE_expr);
 						this.state = 123;
 						if (!(this.precpred(this._ctx, 3))) {
@@ -784,7 +785,7 @@ export class OcamlParser extends Parser {
 						this.state = 124;
 						this.match(OcamlParser.T__36);
 						this.state = 125;
-						this.expr(4);
+						(_localctx as ExprSemicolonExprContext)._second = this.expr(4);
 						}
 						break;
 					}
@@ -1342,6 +1343,7 @@ export class ConstantStrContext extends ExprContext {
 	}
 }
 export class ExprInParanthesesContext extends ExprContext {
+	public _inner!: ExprContext;
 	public expr(): ExprContext {
 		return this.getRuleContext(0, ExprContext);
 	}
@@ -1442,6 +1444,9 @@ export class BinaryOpContext extends ExprContext {
 	}
 }
 export class ConditionalExprContext extends ExprContext {
+	public _condition!: ExprContext;
+	public _consequent!: ExprContext;
+	public _alternative!: ExprContext;
 	public expr(): ExprContext[];
 	public expr(i: number): ExprContext;
 	public expr(i?: number): ExprContext | ExprContext[] {
@@ -1477,6 +1482,8 @@ export class ConditionalExprContext extends ExprContext {
 	}
 }
 export class WhileLoopContext extends ExprContext {
+	public _condition!: ExprContext;
+	public _body!: ExprContext;
 	public expr(): ExprContext[];
 	public expr(i: number): ExprContext;
 	public expr(i?: number): ExprContext | ExprContext[] {
@@ -1512,6 +1519,10 @@ export class WhileLoopContext extends ExprContext {
 	}
 }
 export class ForLoopContext extends ExprContext {
+	public _name!: Value_nameContext;
+	public _binding!: ExprContext;
+	public _end!: ExprContext;
+	public _body!: ExprContext;
 	public value_name(): Value_nameContext {
 		return this.getRuleContext(0, Value_nameContext);
 	}
@@ -1550,6 +1561,8 @@ export class ForLoopContext extends ExprContext {
 	}
 }
 export class ExprSemicolonExprContext extends ExprContext {
+	public _first!: ExprContext;
+	public _second!: ExprContext;
 	public expr(): ExprContext[];
 	public expr(i: number): ExprContext;
 	public expr(i?: number): ExprContext | ExprContext[] {
@@ -1585,6 +1598,8 @@ export class ExprSemicolonExprContext extends ExprContext {
 	}
 }
 export class LambdaContext extends ExprContext {
+	public _params!: ParameterContext;
+	public _body!: ExprContext;
 	public expr(): ExprContext {
 		return this.getRuleContext(0, ExprContext);
 	}

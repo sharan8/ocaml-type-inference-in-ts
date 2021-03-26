@@ -59,19 +59,19 @@ pattern: val = value_name | '_' | constant_integer | constant_boolean | constant
 // ================== EXPRESSIONS ==================
 
 expr:
-	value_name																	# valueName
-	| constant_integer															# constantInt
-	| constant_boolean															# constantBool
-	| constant_string															# constantStr
-	| '(' expr ')'																# exprInParantheses
-	| PREFIX_SYMBOL expr														# exprWithPrefix
-	| left = expr operator = infix_op right = expr								# binaryOp
-	| 'if' expr 'then' expr ('else' expr)?										# conditionalExpr
-	| 'while' expr 'do' expr 'done'												# whileLoop
-	| 'for' value_name '=' expr ('to' | 'downto') expr 'do' expr 'done'			# forLoop
-	| expr ';' expr																# exprSemicolonExpr
-	| 'fun' (parameter)+ '->' expr												# lambda
-	| 'let' ('rec')? name = pattern '=' binding = expr 'in' in_context = expr	# letExpr;
+	value_name																							# valueName
+	| constant_integer																					# constantInt
+	| constant_boolean																					# constantBool
+	| constant_string																					# constantStr
+	| '(' inner = expr ')'																				# exprInParantheses
+	| PREFIX_SYMBOL expr																				# exprWithPrefix
+	| left = expr operator = infix_op right = expr														# binaryOp
+	| 'if' condition = expr 'then' consequent = expr ('else' alternative = expr)?						# conditionalExpr
+	| 'while' condition = expr 'do' body = expr 'done'													# whileLoop
+	| 'for' name = value_name '=' binding = expr ('to' | 'downto') end = expr 'do' body = expr 'done'	# forLoop
+	| first = expr ';' second = expr																	# exprSemicolonExpr
+	| 'fun' (params = parameter)+ '->' body = expr														# lambda
+	| 'let' ('rec')? name = pattern '=' binding = expr 'in' in_context = expr							# letExpr;
 // | 'let' ('rec')? name = value_name (parameter)* '=' binding = expr 'in' in_context = expr	# letFunExpr;
 
 // let_binding: pattern '=' binding = expr # letBinding | value_name (parameter)* '=' expr # letFunBinding;

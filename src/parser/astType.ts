@@ -8,8 +8,8 @@ export class Id implements AstNode {
 }
 
 export class Lambda implements AstNode {
-    constructor(public arg: Id, public body: AstNode) { }
-    toString() { return `(fn ${this.arg} => ${this.body})` }
+    constructor(public args: Id[], public body: AstNode) { }
+    toString() { return `(fn ${this.args} => ${this.body})` }
 }
 
 export class Apply implements AstNode {
@@ -30,4 +30,19 @@ export class BinaryOp implements AstNode {
 export class Sequence implements AstNode {
     constructor(public sequence: AstNode[]) { }
     toString() { return `(sequence: ${this.sequence})`}
+}
+
+export class Conditional implements AstNode {
+    constructor(public condition: AstNode, public consequent: AstNode, public alternative: AstNode) { }
+    toString() { return `(if ${this.condition} then ${this.consequent} else ${this.alternative})` }
+}
+
+export class While implements AstNode {
+    constructor(public condition: AstNode, public body: AstNode) { }
+    toString() { return `(while ${this.condition} do ${this.body} done)` }
+}
+
+export class For implements AstNode {
+    constructor(public name: Id, public binding: AstNode, public end: AstNode, public body: AstNode) { }
+    toString() { return `(for ${this.name} = ${this.binding} to ${this.end} do ${this.body})` }
 }

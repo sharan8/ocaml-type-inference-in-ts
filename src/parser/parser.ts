@@ -11,6 +11,12 @@ import {
   PatternContext,
   Value_nameContext,
   ValueNameContext,
+  ExprInParanthesesContext,
+  ConditionalExprContext,
+  WhileLoopContext,
+  ForLoopContext,
+  LambdaContext,
+  ParameterContext,
 } from '../lang/OcamlParser'
 import { OcamlLexer } from '../lang/OcamlLexer'
 import { OcamlVisitor } from '../lang/OcamlVisitor'
@@ -18,9 +24,12 @@ import { ParseTree } from 'antlr4ts/tree/ParseTree'
 import { RuleNode } from 'antlr4ts/tree/RuleNode'
 import { ErrorNode } from 'antlr4ts/tree/ErrorNode'
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor'
-import { AstNode, BinaryOp, Id, Let, Sequence } from './astType'
+import { AstNode, BinaryOp, Conditional, For, Id, Lambda, Let, Sequence, While } from './astType'
 
 class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements OcamlVisitor<AstNode> {
+  visitValueName(ctx: ValueNameContext): Id {
+    return new Id(ctx.text) 
+  }
   visitConstantInt(ctx: ConstantIntContext): AstNode {
     return new Id(ctx.text) 
   }
@@ -30,13 +39,28 @@ class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements O
   visitConstantStr(ctx: ConstantStrContext): AstNode {
     return new Id(ctx.text) 
   }
+	visitExprInParantheses(ctx: ExprInParanthesesContext): AstNode {
+    return this.visit(ctx._inner)
+  }
   visitBinaryOp(ctx: BinaryOpContext): AstNode {
     return new BinaryOp(ctx._operator.text, this.visit(ctx._left), this.visit(ctx._right)) 
   }
-  visitValue_Name(ctx: Value_nameContext): Id {
-    return new Id(ctx.text) 
+  visitConditionalExpr(ctx: ConditionalExprContext): AstNode {
+    return new Conditional(this.visit(ctx._condition), this.visit(ctx._consequent), this.visit(ctx._alternative))
   }
-  visitValueName(ctx: ValueNameContext): Id {
+  visitWhileLoop(ctx: WhileLoopContext): AstNode {
+    return new While(this.visit(ctx._condition), this.visit(ctx._body))
+  }
+  visitForLoop(ctx: ForLoopContext): AstNode {
+    return new For(this.visitValue_Name(ctx._name), this.visit(ctx._binding), this.visit(ctx._end), this.visit(ctx._body))
+  }
+  visitLambda(ctx: LambdaContext): AstNode {
+    return new Lambda(ctx.parameter().map(param => this.visitParameter(param)), this.visit(ctx._body))
+  }
+  visitParameter(ctx: ParameterContext): Id {
+    return this.visitPattern(ctx.pattern())
+  }
+  visitValue_Name(ctx: Value_nameContext): Id {
     return new Id(ctx.text) 
   }
   visitPattern(ctx: PatternContext): Id {
@@ -84,7 +108,6 @@ export function parse(input: string) {
     const parser = new OcamlParser(tokenStream)
     parser.buildParseTree = true
     try {
-      // Here we can change parser.expr() to be parser._typeofstatementtoparse_()
       const tree = parser.expr()
       program = convertOcaml(tree)
       return program
