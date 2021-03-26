@@ -139,7 +139,7 @@ function unify(type1: AstType, type2: AstType): undefined {
 }
 
 function prune(type: AstType): AstType {
-    if (type instanceof TypeVariable && type.instance)
+    if (type instanceof TypeVariable && Object.keys(type.instance).length > 0)
         return type.instance = prune(type.instance)
     return type
 }

@@ -17,6 +17,7 @@ import {
   ForLoopContext,
   LambdaContext,
   ParameterContext,
+  ApplicationContext,
 } from '../lang/OcamlParser'
 import { OcamlLexer } from '../lang/OcamlLexer'
 import { OcamlVisitor } from '../lang/OcamlVisitor'
@@ -24,7 +25,7 @@ import { ParseTree } from 'antlr4ts/tree/ParseTree'
 import { RuleNode } from 'antlr4ts/tree/RuleNode'
 import { ErrorNode } from 'antlr4ts/tree/ErrorNode'
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor'
-import { AstNode, basicType, BinaryOp, Conditional, For, Id, Lambda, Let, Sequence, While } from '../type-inference/nodes'
+import { Apply, AstNode, basicType, BinaryOp, Conditional, For, Id, Lambda, Let, Sequence, While } from '../type-inference/nodes'
 class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements OcamlVisitor<AstNode> {
   visitValueName(ctx: ValueNameContext): Id {
     return new Id(ctx.text, basicType.reference) 
@@ -55,6 +56,9 @@ class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements O
   }
   visitLambda(ctx: LambdaContext): AstNode {
     return new Lambda(ctx.parameter().map(param => this.visitParameter(param)), this.visit(ctx._body))
+  }
+	visitApplication(ctx: ApplicationContext): AstNode {
+    return new Apply(this.visit(ctx._fun), this.visit(ctx._argument))
   }
   visitParameter(ctx: ParameterContext): Id {
     return this.visitPattern(ctx.pattern())

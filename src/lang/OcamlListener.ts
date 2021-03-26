@@ -15,6 +15,7 @@ import { WhileLoopContext } from "./OcamlParser";
 import { ForLoopContext } from "./OcamlParser";
 import { ExprSemicolonExprContext } from "./OcamlParser";
 import { LambdaContext } from "./OcamlParser";
+import { ApplicationContext } from "./OcamlParser";
 import { LetExprContext } from "./OcamlParser";
 import { Value_nameContext } from "./OcamlParser";
 import { Operator_nameContext } from "./OcamlParser";
@@ -189,6 +190,19 @@ export interface OcamlListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitLambda?: (ctx: LambdaContext) => void;
+
+	/**
+	 * Enter a parse tree produced by the `application`
+	 * labeled alternative in `OcamlParser.expr`.
+	 * @param ctx the parse tree
+	 */
+	enterApplication?: (ctx: ApplicationContext) => void;
+	/**
+	 * Exit a parse tree produced by the `application`
+	 * labeled alternative in `OcamlParser.expr`.
+	 * @param ctx the parse tree
+	 */
+	exitApplication?: (ctx: ApplicationContext) => void;
 
 	/**
 	 * Enter a parse tree produced by the `letExpr`

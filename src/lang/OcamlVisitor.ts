@@ -16,6 +16,7 @@ import { WhileLoopContext } from "./OcamlParser";
 import { ForLoopContext } from "./OcamlParser";
 import { ExprSemicolonExprContext } from "./OcamlParser";
 import { LambdaContext } from "./OcamlParser";
+import { ApplicationContext } from "./OcamlParser";
 import { LetExprContext } from "./OcamlParser";
 import { Value_nameContext } from "./OcamlParser";
 import { Operator_nameContext } from "./OcamlParser";
@@ -133,6 +134,14 @@ export interface OcamlVisitor<Result> extends ParseTreeVisitor<Result> {
 	 * @return the visitor result
 	 */
 	visitLambda?: (ctx: LambdaContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by the `application`
+	 * labeled alternative in `OcamlParser.expr`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitApplication?: (ctx: ApplicationContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by the `letExpr`
