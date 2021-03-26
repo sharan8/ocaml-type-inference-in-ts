@@ -1,6 +1,7 @@
 /* tslint:disable:max-classes-per-file */
 // @ts-check
 
+import { InferenceError } from "./errors"
 import { Apply, AstNode, basicType, Id, Lambda, Let } from "./nodes"
 
 export interface AstType {
@@ -13,7 +14,7 @@ class TypeVariable implements AstType {
         this.instantiated = false
     }
     toString() {
-        return this.instantiated ? this.instance.toString() : this.name
+        return Object.keys(this.instance).length === 0 ? this.name : this.instance.toString()
     }
 
     instance: AstType
@@ -40,6 +41,7 @@ class TypeOperator implements AstType {
 
 const IntegerType = new TypeOperator('int', [ ])
 const BoolType = new TypeOperator('bool', [ ])
+const StringType = new TypeOperator('string', [ ])
 const FunctionType = (from: AstType, to: AstType) => new TypeOperator('->', [from, to])
 
 class TypeEnv {
@@ -48,7 +50,7 @@ class TypeEnv {
     get(name: any, nonGenerics: Set<AstType>) {
         if (name in this.map)
             return fresh(this.map[name], nonGenerics)
-        throw 'undefined symbol: ' + name
+        throw new InferenceError('undefined symbol: ' + name)
     }
     extend(name: any, val: AstType) {
         return new TypeEnv(Object.assign({ }, this.map, { [name]:val }))
@@ -83,7 +85,7 @@ export function analyse(node: AstNode, env: TypeEnv, nonGeneric: Set<AstType>): 
         return analyse(node.body, newEnv, nonGeneric)
     }
     else {
-        throw 'unhandled syntax node ' + node
+        throw new InferenceError('unhandled syntax node ' + node)
     }
 }
 
@@ -106,7 +108,7 @@ function fresh(type: AstType, nonGeneric: Set<AstType>): AstType {
             return new TypeOperator(type.name, type.types.map(freshrec))
         }
         else {
-            throw 'unexpected type to fresh'
+            throw new InferenceError('unexpected type to fresh')
         }
     }
 
@@ -119,7 +121,7 @@ function unify(type1: AstType, type2: AstType): undefined {
     if (t1 instanceof TypeVariable) {
         if (t1 !== t2) {
             if (occursInType(t1, t2))
-                throw 'recurive unification'
+                throw new InferenceError('recurive unification')
             t1.instance = t2
         }
     }
@@ -128,11 +130,11 @@ function unify(type1: AstType, type2: AstType): undefined {
     }
     else if (t1 instanceof TypeOperator && t2 instanceof TypeOperator) {
         if (t1.name !== t2.name || t1.types.length !== t2.types.length)
-            throw 'type mismatch: ' + t1 + ' != ' + t2
+            throw new InferenceError('type mismatch: ' + t1 + ' != ' + t2)
         t1.types.forEach((t, i) => unify((t1 as TypeOperator).types[i], (t2 as TypeOperator).types[i]))
     }
     else {
-        throw 'unexpected types to unify'
+        throw new InferenceError('unexpected types to unify')
     }
 }
 
@@ -173,9 +175,9 @@ const env = new TypeEnv({
     times: FunctionType(IntegerType, FunctionType(IntegerType, IntegerType)),
     0: IntegerType,
     1: BoolType,
+    2: StringType,
 })
 
 export function run(exp: AstNode) {
-    console.log(exp.toString())
     return analyse(exp, env, new Set())
 }

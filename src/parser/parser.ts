@@ -87,15 +87,9 @@ class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements O
   }
 }
 
-function convertExpression(expression: ExprContext): AstNode {
+function convertOcaml(expression: ExprContext): AstNode {
   const generator = new ExpressionGenerator()
   return expression.accept(generator)
-}
-
-function convertOcaml(expression: ExprContext): AstNode {
-  return {
-        expression: convertExpression(expression)
-  }
 }
 
 export function parse(input: string) {
@@ -108,7 +102,7 @@ export function parse(input: string) {
     parser.buildParseTree = true
     try {
       const tree = parser.expr()
-      program = convertExpression(tree)
+      program = convertOcaml(tree)
       return program
     } catch (error) {
         throw error
