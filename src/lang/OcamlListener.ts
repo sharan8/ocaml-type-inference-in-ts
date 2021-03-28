@@ -17,6 +17,7 @@ import { ExprSemicolonExprContext } from "./OcamlParser";
 import { LambdaContext } from "./OcamlParser";
 import { ApplicationContext } from "./OcamlParser";
 import { LetExprContext } from "./OcamlParser";
+import { GlobalLetExprContext } from "./OcamlParser";
 import { Value_nameContext } from "./OcamlParser";
 import { Operator_nameContext } from "./OcamlParser";
 import { Infix_opContext } from "./OcamlParser";
@@ -216,6 +217,19 @@ export interface OcamlListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitLetExpr?: (ctx: LetExprContext) => void;
+
+	/**
+	 * Enter a parse tree produced by the `globalLetExpr`
+	 * labeled alternative in `OcamlParser.expr`.
+	 * @param ctx the parse tree
+	 */
+	enterGlobalLetExpr?: (ctx: GlobalLetExprContext) => void;
+	/**
+	 * Exit a parse tree produced by the `globalLetExpr`
+	 * labeled alternative in `OcamlParser.expr`.
+	 * @param ctx the parse tree
+	 */
+	exitGlobalLetExpr?: (ctx: GlobalLetExprContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `OcamlParser.value_name`.

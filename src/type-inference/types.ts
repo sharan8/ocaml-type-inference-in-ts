@@ -2,7 +2,7 @@
 // @ts-check
 
 import { InferenceError } from "./errors"
-import { Apply, AstNode, basicType, Id, Lambda, Let } from "./nodes"
+import { Apply, AstNode, basicType, GlobalLet, Id, Lambda, Let } from "./nodes"
 
 export interface AstType {
 }
@@ -68,6 +68,7 @@ class TypeEnv {
 }
 
 export function analyse(node: AstNode, env: TypeEnv, nonGeneric: Set<AstType>): AstContext {
+    console.log(env)
     if (node instanceof Id) {
         if (node.type === basicType.reference) {
             return new Context(env.get(node.name, nonGeneric), env)
@@ -93,8 +94,14 @@ export function analyse(node: AstNode, env: TypeEnv, nonGeneric: Set<AstType>): 
     }
     else if (node instanceof Let) {
         let newContext = analyse(node.value, env, nonGeneric),
+            newEnv = env.extend(node.variable, newContext.type),
+            resultContext = analyse(node.body, newEnv, nonGeneric)
+        return new Context(resultContext.type, env)
+    }
+    else if (node instanceof GlobalLet) {
+        let newContext = analyse(node.value, env, nonGeneric),
             newEnv = env.extend(node.variable, newContext.type)
-        return analyse(node.body, newEnv, nonGeneric)
+        return new Context(newContext.type, newEnv)
     }
     else {
         throw new InferenceError('unhandled syntax node ' + node)
