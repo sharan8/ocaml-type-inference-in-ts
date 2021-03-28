@@ -1,5 +1,4 @@
 /* tslint:disable:max-classes-per-file */
-// @ts-check
 
 import { InferenceError } from "./errors"
 import { Apply, AstNode, basicType, GlobalLet, Id, Lambda, Let } from "./nodes"

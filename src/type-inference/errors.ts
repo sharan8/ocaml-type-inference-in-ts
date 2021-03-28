@@ -1,15 +1,24 @@
+/* tslint:disable:max-classes-per-file */
+
 enum ErrorType {
+    PARSE,
     INFERENCE,
 }
 
-export interface TypeError {
+export class AstError {
+  constructor(public explanation: string) {}
+  public explain() {
+    return this.explanation
+  }
+  toString() {
+    return this.explain()
+  }
 }
 
-export class InferenceError implements TypeError {
-    public type = ErrorType.INFERENCE
-  
-    constructor(public explanation: string) {}
-    public explain() {
-      return this.explanation
-    }
+export class ParseError extends AstError {
+  public errorType = ErrorType.PARSE
+
+}
+export class InferenceError extends AstError {
+    public errorType = ErrorType.INFERENCE
   }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import { parse } from './parser/parser'
 import { run } from './type-inference/types'
+import { AstError } from './type-inference/errors'
 import JSONPretty from 'react-json-pretty';
 
 function App() {
@@ -9,10 +10,19 @@ function App() {
   const [output, setOutput] = useState();
 
   function handleClick() {
-    const parsed = parse(prog)
-    console.log(parsed)
-    const type = run(parsed)
-    setOutput(type)
+    try {
+      const parsed = parse(prog)
+      console.log(parsed)
+      const type = run(parsed)
+      setOutput(type)
+    } catch (error) {
+      if (error instanceof AstError) {
+        setOutput(error)
+      }
+      else {
+        throw error
+      }
+    }
   }
 
   return (
@@ -22,17 +32,17 @@ function App() {
         <div>
           <label>Input OCaml code here:</label>
           <br />
-            <input type="text" name="name" value={prog} onChange={e => setProg(e.target.value)}/>
+          <input type="text" name="name" value={prog} onChange={e => setProg(e.target.value)} />
           <button onClick={handleClick}>
-            Submit 
+            Submit
           </button>
-      </div>
-      <br />
-      <label>Output:</label>
-      <div align="left">
-        <h5>Expression Type: {output && (output.toString())}</h5>
-        <JSONPretty id="json-pretty" data={output}></JSONPretty>
-      </div>
+        </div>
+        <br />
+        <label>Output:</label>
+        <div align="left">
+          <h5>Expression Type: {output && output.toString()}</h5>
+          <JSONPretty id="json-pretty" data={output}></JSONPretty>
+        </div>
       </header>
     </div>
   );

@@ -27,6 +27,7 @@ import { RuleNode } from 'antlr4ts/tree/RuleNode'
 import { ErrorNode } from 'antlr4ts/tree/ErrorNode'
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor'
 import { Apply, AstNode, basicType, BinaryOp, Conditional, For, GlobalLet, Id, Lambda, Let, Sequence, While } from '../type-inference/nodes'
+import { ParseError } from '../type-inference/errors'
 class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements OcamlVisitor<AstNode> {
   visitValueName(ctx: ValueNameContext): Id {
     return new Id(ctx.text, basicType.reference) 
@@ -91,7 +92,7 @@ class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements O
     return new Sequence(expressions) 
   }
   visitErrorNode(node: ErrorNode): AstNode {
-    throw new Error()
+    throw new ParseError("Parsing error: " + node.toString() + " is not a valid expression")
   }
 }
 
