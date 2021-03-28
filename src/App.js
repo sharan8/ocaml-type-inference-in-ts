@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import { parse } from './parser/parser'
-import { run } from './type-inference/types'
+import { run } from './type-inference/typeInference'
 import { AstError } from './type-inference/errors'
 import JSONPretty from 'react-json-pretty';
 
@@ -40,7 +40,7 @@ function App() {
         <br />
         <label>Output:</label>
         <div align="left">
-          <h5>Expression Type: {output && output.toString()}</h5>
+          <h5>{output && output.toString()}</h5>
           <JSONPretty id="json-pretty" data={output}></JSONPretty>
         </div>
       </header>

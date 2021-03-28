@@ -92,7 +92,7 @@ class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements O
     return new Sequence(expressions) 
   }
   visitErrorNode(node: ErrorNode): AstNode {
-    throw new ParseError("Parsing error: " + node.toString() + " is not a valid expression")
+    throw new ParseError(node.toString() + " is not a valid expression")
   }
 }
 
