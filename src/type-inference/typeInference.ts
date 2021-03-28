@@ -148,7 +148,7 @@ const BoolType = new TypeOperator('bool', [ ])
 const StringType = new TypeOperator('string', [ ])
 const FunctionType = (from: AstType, to: AstType) => new TypeOperator('->', [from, to])
 
-const env = new TypeEnv({
+const GlobalEnv = new TypeEnv({
     pair: FunctionType(type1, FunctionType(type2, new TypeOperator('*', [type1, type2]))),
     cond: FunctionType(BoolType, FunctionType(type3, FunctionType(type3, type3))),
     zero: FunctionType(IntegerType, BoolType),
@@ -159,9 +159,18 @@ const env = new TypeEnv({
     2: StringType,
 })
 
-let runningEnv = env;
+let runningEnv = new TypeEnv({...GlobalEnv.map});
 
-export function run(exp: AstNode) {
+export function resetEnvironment() {
+    runningEnv = new TypeEnv({...GlobalEnv.map});
+}
+
+export function infer(exp: AstNode) {
+    let resultContext = analyse(exp, GlobalEnv, new Set())
+    return resultContext.type
+}
+
+export function inferWithPersistentEnv(exp: AstNode) {
     let resultContext = analyse(exp, runningEnv, new Set())
     runningEnv = resultContext.env
     return resultContext.type

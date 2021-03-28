@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { parse } from './parser/parser'
-import { run } from './type-inference/typeInference'
+import { inferWithPersistentEnv } from './type-inference/typeInference'
 import { AstError } from './type-inference/errors'
 import Terminal from 'terminal-in-react';
 
@@ -11,7 +11,7 @@ function App() {
       const parsed = parse(userInput)
       console.log("Parse output:")
       console.log(parsed)
-      const type = run(parsed)
+      const type = inferWithPersistentEnv(parsed)
       return type.toString()
     } catch (error) {
       if (error instanceof AstError) {
