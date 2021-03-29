@@ -61,6 +61,7 @@ function App() {
           <p>Hello there! Welcome to our OCaml type checker based on {' '}
             <a 
               href="https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system" 
+              target="_blank"
               style={{color:"#ff8080"}}>
                 Hindley-Milner Type Inference (Algorithm W)
             </a>.
