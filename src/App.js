@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { parse } from './parser/parser'
-import { run } from './type-inference/typeInference'
+import { inferWithPersistentEnv } from './type-inference/typeInference'
 import { AstError } from './type-inference/errors'
 import Terminal from 'terminal-in-react';
 
@@ -11,7 +11,7 @@ function App() {
       const parsed = parse(userInput)
       console.log("Parse output:")
       console.log(parsed)
-      const type = run(parsed)
+      const type = inferWithPersistentEnv(parsed)
       return type.toString()
     } catch (error) {
       if (error instanceof AstError) {
@@ -49,7 +49,7 @@ function App() {
             const inputString = cmd.join(" ")
             return handleUserInput(inputString)
           }}
-          msg='Input any expression in OCaml below. For help with OCaml, try `ocaml-help`.'
+          msg='Input any expression in OCaml below. For help with OCaml, try `ocaml-help`. E.g. `fun a -> fun b -> fun c -> (a c (b c))`'
         />)
   }
 
