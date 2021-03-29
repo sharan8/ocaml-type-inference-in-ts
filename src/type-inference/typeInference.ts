@@ -1,7 +1,7 @@
 /* tslint:disable:max-classes-per-file */
 
 import { InferenceError } from "./errors"
-import { Apply, AstNode, basicType, GlobalLet, Id, Lambda, Let } from "./nodes"
+import { Apply, AstNode, basicType, BinaryOp, GlobalLet, Id, Lambda, Let } from "./nodes"
 import { AstType, TypeVariable, TypeOperator } from "./types"
 
 class TypeEnv {
@@ -60,6 +60,14 @@ export function analyse(node: AstNode, env: TypeEnv, nonGeneric: Set<AstType>): 
         let newContext = analyse(node.value, env, nonGeneric),
             newEnv = env.extend(node.variable, newContext.type)
         return new Context(newContext.type, newEnv)
+    }
+    else if (node instanceof BinaryOp) {
+        let operatorType = env.get(node.operator, nonGeneric),
+            leftType = analyse(node.left, env, nonGeneric),
+            rightType = analyse(node.right, env, nonGeneric),
+            retType = new TypeVariable()
+            unify(operatorType, FunctionType(leftType.type, FunctionType(rightType.type, retType)))
+        return new Context(retType, env)
     }
     else {
         throw new InferenceError('unhandled syntax node ' + node)
@@ -154,6 +162,7 @@ const GlobalEnv = new TypeEnv({
     zero: FunctionType(IntegerType, BoolType),
     pred: FunctionType(IntegerType, IntegerType),
     times: FunctionType(IntegerType, FunctionType(IntegerType, IntegerType)),
+    "+": FunctionType(IntegerType, FunctionType(IntegerType, IntegerType)),
     0: IntegerType,
     1: BoolType,
     2: StringType,
