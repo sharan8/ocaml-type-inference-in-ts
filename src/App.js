@@ -44,7 +44,10 @@ function App() {
             'ocaml-help': 'open ocaml examples page',
             'baby-camels': 'easter egg :P'
           }}
-          commandPassThrough={cmd => handleUserInput(cmd.join())}
+          commandPassThrough={cmd => {
+            const inputString = cmd.join(" ")
+            return handleUserInput(inputString)
+          }}
           msg='Input any expression in OCaml below. For help with OCaml, try `ocaml-help`.'
         />)
   }
