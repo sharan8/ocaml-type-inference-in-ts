@@ -65,6 +65,7 @@ function App() {
             <a 
               href="https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system" 
               target="_blank"
+              rel="noreferrer"
               style={{color:"#ff8080"}}>
                 Hindley-Milner Type Inference (Algorithm W)
             </a>.
