@@ -17,6 +17,8 @@ import {
   ForLoopContext,
   LambdaContext,
   ParameterContext,
+  ApplicationContext,
+  GlobalLetExprContext,
 } from '../lang/OcamlParser'
 import { OcamlLexer } from '../lang/OcamlLexer'
 import { OcamlVisitor } from '../lang/OcamlVisitor'
@@ -24,20 +26,20 @@ import { ParseTree } from 'antlr4ts/tree/ParseTree'
 import { RuleNode } from 'antlr4ts/tree/RuleNode'
 import { ErrorNode } from 'antlr4ts/tree/ErrorNode'
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor'
-import { AstNode, BinaryOp, Conditional, For, Id, Lambda, Let, Sequence, While } from './astType'
-
+import { Apply, AstNode, basicType, BinaryOp, Conditional, For, GlobalLet, Id, Lambda, Let, Sequence, While } from '../type-inference/nodes'
+import { ParseError } from '../type-inference/errors'
 class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements OcamlVisitor<AstNode> {
   visitValueName(ctx: ValueNameContext): Id {
-    return new Id(ctx.text) 
+    return new Id(ctx.text, basicType.reference) 
   }
   visitConstantInt(ctx: ConstantIntContext): AstNode {
-    return new Id(ctx.text) 
+    return new Id(ctx.text, basicType.integer_literal) 
   }
   visitConstantBool(ctx: ConstantBoolContext): AstNode {
-    return new Id(ctx.text) 
+    return new Id(ctx.text, basicType.bool_literal) 
   }
   visitConstantStr(ctx: ConstantStrContext): AstNode {
-    return new Id(ctx.text) 
+    return new Id(ctx.text, basicType.string_literal) 
   }
 	visitExprInParantheses(ctx: ExprInParanthesesContext): AstNode {
     return this.visit(ctx._inner)
@@ -57,11 +59,14 @@ class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements O
   visitLambda(ctx: LambdaContext): AstNode {
     return new Lambda(ctx.parameter().map(param => this.visitParameter(param)), this.visit(ctx._body))
   }
+	visitApplication(ctx: ApplicationContext): AstNode {
+    return new Apply(this.visit(ctx._fun), this.visit(ctx._argument))
+  }
   visitParameter(ctx: ParameterContext): Id {
     return this.visitPattern(ctx.pattern())
   }
   visitValue_Name(ctx: Value_nameContext): Id {
-    return new Id(ctx.text) 
+    return new Id(ctx.text, basicType.reference) 
   }
   visitPattern(ctx: PatternContext): Id {
     return this.visitValue_Name(ctx._val);
@@ -69,8 +74,11 @@ class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements O
   visitLetExpr(ctx: LetExprContext): AstNode {
     return new Let(this.visitPattern(ctx._name), this.visit(ctx._binding), this.visit(ctx._in_context))
   }
+  visitGlobalLetExpr(ctx: GlobalLetExprContext): AstNode {
+    return new GlobalLet(this.visitPattern(ctx._name), this.visit(ctx._binding))
+  }
   defaultResult(): AstNode {
-    return new Id("Default") 
+    return new Id("Default", basicType.default) 
   }
   visitExpr?: ((ctx: ExprContext) => AstNode) | undefined
   visit(tree: ParseTree): AstNode {
@@ -84,19 +92,13 @@ class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements O
     return new Sequence(expressions) 
   }
   visitErrorNode(node: ErrorNode): AstNode {
-    throw new Error()
+    throw new ParseError(node.toString() + " is not a valid expression")
   }
-}
-
-function convertExpression(expression: ExprContext): AstNode {
-  const generator = new ExpressionGenerator()
-  return expression.accept(generator)
 }
 
 function convertOcaml(expression: ExprContext): AstNode {
-  return {
-        expression: convertExpression(expression)
-  }
+  const generator = new ExpressionGenerator()
+  return expression.accept(generator)
 }
 
 export function parse(input: string) {

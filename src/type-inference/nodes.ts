@@ -2,8 +2,15 @@
 export interface AstNode {
 }
 
+export enum basicType {
+    integer_literal,
+    bool_literal,
+    string_literal,
+    reference,
+    default,
+}
 export class Id implements AstNode {
-    constructor(public name: string) { }
+    constructor(public name: string, public type: basicType) { }
     toString() { return this.name }
 }
 
@@ -20,6 +27,11 @@ export class Apply implements AstNode {
 export class Let implements AstNode {
     constructor(public variable: Id, public value: AstNode, public body: AstNode) { }
     toString() { return `(let ${this.variable} = ${this.value} in ${this.body})` }
+}
+
+export class GlobalLet implements AstNode {
+    constructor(public variable: Id, public value: AstNode) { }
+    toString() { return `(let ${this.variable} = ${this.value})` }
 }
 
 export class BinaryOp implements AstNode {

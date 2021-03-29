@@ -71,7 +71,9 @@ expr:
 	| 'for' name = value_name '=' binding = expr ('to' | 'downto') end = expr 'do' body = expr 'done'	# forLoop
 	| first = expr ';' second = expr																	# exprSemicolonExpr
 	| 'fun' (params = parameter)+ '->' body = expr														# lambda
-	| 'let' ('rec')? name = pattern '=' binding = expr 'in' in_context = expr							# letExpr;
+	| fun = expr argument = expr																		# application
+	| 'let' ('rec')? name = pattern '=' binding = expr 'in' in_context = expr							# letExpr
+	| 'let' ('rec')? name = pattern '=' binding = expr													# globalLetExpr;
 // | 'let' ('rec')? name = value_name (parameter)* '=' binding = expr 'in' in_context = expr	# letFunExpr;
 
 // let_binding: pattern '=' binding = expr # letBinding | value_name (parameter)* '=' expr # letFunBinding;
