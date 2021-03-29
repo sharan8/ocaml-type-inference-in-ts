@@ -25,10 +25,11 @@ function App() {
 
   const InputTerminal = () => {
     return (<Terminal
-          color='#89f238'
           backgroundColor='black'
           barColor='gray'
           prompt='white'
+          color='#89f238'
+          outputColor='#89f238'
           style={{ fontWeight: "bold", fontSize: "0.7em" }}
           commands={{
             'ocaml-help': () => {
@@ -75,7 +76,8 @@ function App() {
             style={{
               display: "flex",
               justifyContent: "center",
-              alignItems: "center"
+              alignItems: "center",
+              width: "100vw"
             }}
           >
           <InputTerminal />
