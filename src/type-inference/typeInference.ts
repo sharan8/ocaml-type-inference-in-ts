@@ -162,16 +162,23 @@ const type1 = new TypeVariable(),
     type5 = new TypeVariable(),
     type6 = new TypeVariable(),
     type7 = new TypeVariable(),
-    type8 = new TypeVariable()
+    type8 = new TypeVariable(),
+    type9 = new TypeVariable(),
+    type10 = new TypeVariable(),
+    type11 = new TypeVariable(),
+    type12 = new TypeVariable()
 
 
 const IntegerType = new TypeOperator('int', [ ])
 const BoolType = new TypeOperator('bool', [ ])
 const StringType = new TypeOperator('string', [ ])
 const FunctionType = (from: AstType, to: AstType) => new TypeOperator('->', [from, to])
+const PairType = (from: AstType, to: AstType) => new TypeOperator('*', [from, to])
 
 const GlobalEnv = new TypeEnv({
-    pair: FunctionType(type1, FunctionType(type2, new TypeOperator('*', [type1, type2]))),
+    pair: FunctionType(type1, FunctionType(type2, PairType(type1, type2))),
+    head: FunctionType(PairType(type9, type10), type9),
+    tail: FunctionType(PairType(type11, type12), type12),
     cond: FunctionType(BoolType, FunctionType(type3, FunctionType(type3, type3))),
     zero: FunctionType(IntegerType, BoolType),
     pred: FunctionType(IntegerType, IntegerType),
