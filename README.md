@@ -8,6 +8,8 @@ References:
 
 Principal type-schemes for functional programs (Damas, Milner): http://steshaw.org/hm/milner-damas.pdf
 
+Ian Grant 2011 on HM: https://steshaw.org/hm/hindley-milner.pdf
+
 Hindley Milner in Haskell: https://github.com/kritzcreek/fby19
 
 Hindley Milner implementation in Python: https://github.com/rob-smallshire/hindley-milner-python/blob/master/inference.py
