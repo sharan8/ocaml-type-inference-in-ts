@@ -88,5 +88,5 @@ PREFIX_SYMBOL=51
 ';'=37
 'fun'=38
 'let'=39
-'rec'=40
-'in'=41
+'in'=40
+'rec'=41

@@ -72,8 +72,10 @@ expr:
 	| first = expr ';' second = expr																	# exprSemicolonExpr
 	| 'fun' (params = parameter)+ '->' body = expr														# lambda
 	| fun = expr argument = expr																		# application
-	| 'let' ('rec')? name = pattern '=' binding = expr 'in' in_context = expr							# letExpr
-	| 'let' ('rec')? name = pattern '=' binding = expr													# globalLetExpr;
+	| 'let' name = pattern '=' binding = expr 'in' in_context = expr									# letExpr
+	| 'let' name = pattern '=' binding = expr															# globalLetExpr
+	| 'let' 'rec' name = pattern '=' binding = expr 'in' in_context = expr								# letRecExpr
+	| 'let' 'rec' name = pattern '=' binding = expr														# globalLetRecExpr;
 // | 'let' ('rec')? name = value_name (parameter)* '=' binding = expr 'in' in_context = expr	# letFunExpr;
 
 // let_binding: pattern '=' binding = expr # letBinding | value_name (parameter)* '=' expr # letFunBinding;
