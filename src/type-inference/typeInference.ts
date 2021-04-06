@@ -1,7 +1,7 @@
 /* tslint:disable:max-classes-per-file */
 
-import { InferenceError } from "./errors"
-import { Apply, AstNode, basicType, BinaryOp, GlobalLet, Id, Lambda, Let } from "./nodes"
+import { InferenceError, UnificationError } from "./errors"
+import { Apply, AstNode, basicType, BinaryOp, GlobalLet, Id, Lambda, Let, Letrec } from "./nodes"
 import { AstType, TypeVariable, TypeOperator } from "./types"
 
 class TypeEnv {
@@ -69,6 +69,14 @@ export function analyse(node: AstNode, env: TypeEnv, nonGeneric: Set<AstType>): 
             unify(operatorType, FunctionType(leftType.type, FunctionType(rightType.type, retType)))
         return new Context(retType, env)
     }
+    else if (node instanceof Letrec) {
+        let newType = new TypeVariable(),
+            newEnv = env.extend(node.variable, newType),
+            newGeneric = new Set(Array.from(nonGeneric).concat(newType)),
+            valType = analyse(node.value, newEnv, newGeneric).type
+            unify(newType, valType)
+        return analyse(node.body, newEnv, nonGeneric)
+    }
     else {
         throw new InferenceError('unhandled syntax node ' + node)
     }
@@ -106,7 +114,7 @@ function unify(type1: AstType, type2: AstType): undefined {
     if (t1 instanceof TypeVariable) {
         if (t1 !== t2) {
             if (occursInType(t1, t2))
-                throw new InferenceError('recurive unification')
+                throw new UnificationError('Occurs Check')
             t1.instance = t2
         }
     }
@@ -114,12 +122,13 @@ function unify(type1: AstType, type2: AstType): undefined {
         return unify(t2, t1)
     }
     else if (t1 instanceof TypeOperator && t2 instanceof TypeOperator) {
-        if (t1.name !== t2.name || t1.types.length !== t2.types.length)
-            throw new InferenceError('type mismatch: ' + t1 + ' != ' + t2)
+        if (t1.name !== t2.name || t1.types.length !== t2.types.length) {
+            throw new UnificationError('Cannot unify: ' + t1 + ' != ' + t2)
+        }
         t1.types.forEach((t, i) => unify((t1 as TypeOperator).types[i], (t2 as TypeOperator).types[i]))
     }
     else {
-        throw new InferenceError('unexpected types to unify')
+        throw new UnificationError('Failed to unify')
     }
 }
 

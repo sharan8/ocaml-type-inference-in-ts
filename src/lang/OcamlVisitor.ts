@@ -19,6 +19,8 @@ import { LambdaContext } from "./OcamlParser";
 import { ApplicationContext } from "./OcamlParser";
 import { LetExprContext } from "./OcamlParser";
 import { GlobalLetExprContext } from "./OcamlParser";
+import { LetRecExprContext } from "./OcamlParser";
+import { GlobalLetRecExprContext } from "./OcamlParser";
 import { Value_nameContext } from "./OcamlParser";
 import { Operator_nameContext } from "./OcamlParser";
 import { Infix_opContext } from "./OcamlParser";
@@ -159,6 +161,22 @@ export interface OcamlVisitor<Result> extends ParseTreeVisitor<Result> {
 	 * @return the visitor result
 	 */
 	visitGlobalLetExpr?: (ctx: GlobalLetExprContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by the `letRecExpr`
+	 * labeled alternative in `OcamlParser.expr`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitLetRecExpr?: (ctx: LetRecExprContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by the `globalLetRecExpr`
+	 * labeled alternative in `OcamlParser.expr`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitGlobalLetRecExpr?: (ctx: GlobalLetRecExprContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `OcamlParser.value_name`.

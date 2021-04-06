@@ -19,6 +19,8 @@ import {
   ParameterContext,
   ApplicationContext,
   GlobalLetExprContext,
+  LetRecExprContext,
+  GlobalLetRecExprContext,
 } from '../lang/OcamlParser'
 import { OcamlLexer } from '../lang/OcamlLexer'
 import { OcamlVisitor } from '../lang/OcamlVisitor'
@@ -26,7 +28,7 @@ import { ParseTree } from 'antlr4ts/tree/ParseTree'
 import { RuleNode } from 'antlr4ts/tree/RuleNode'
 import { ErrorNode } from 'antlr4ts/tree/ErrorNode'
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor'
-import { Apply, AstNode, basicType, BinaryOp, Conditional, For, GlobalLet, Id, Lambda, Let, Sequence, While } from '../type-inference/nodes'
+import { Apply, AstNode, basicType, BinaryOp, Conditional, For, GlobalLet, GlobalLetrec, Id, Lambda, Let, Letrec, Sequence, While } from '../type-inference/nodes'
 import { ParseError } from '../type-inference/errors'
 class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements OcamlVisitor<AstNode> {
   visitValueName(ctx: ValueNameContext): Id {
@@ -76,6 +78,12 @@ class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements O
   }
   visitGlobalLetExpr(ctx: GlobalLetExprContext): AstNode {
     return new GlobalLet(this.visitPattern(ctx._name), this.visit(ctx._binding))
+  }
+  visitLetRecExpr(ctx: LetRecExprContext): AstNode {
+    return new Letrec(this.visitPattern(ctx._name), this.visit(ctx._binding), this.visit(ctx._in_context))
+  }
+  visitGlobalLetRecExpr(ctx: GlobalLetRecExprContext): AstNode {
+    return new GlobalLetrec(this.visitPattern(ctx._name), this.visit(ctx._binding))
   }
   defaultResult(): AstNode {
     return new Id("Default", basicType.default) 
