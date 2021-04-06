@@ -157,7 +157,12 @@ function occursInTypes(type: TypeVariable, types: AstType[]): boolean {
 
 const type1 = new TypeVariable(),
     type2 = new TypeVariable(),
-    type3 = new TypeVariable()
+    type3 = new TypeVariable(),
+    type4 = new TypeVariable(),
+    type5 = new TypeVariable(),
+    type6 = new TypeVariable(),
+    type7 = new TypeVariable(),
+    type8 = new TypeVariable()
 
 
 const IntegerType = new TypeOperator('int', [ ])
@@ -172,6 +177,16 @@ const GlobalEnv = new TypeEnv({
     pred: FunctionType(IntegerType, IntegerType),
     times: FunctionType(IntegerType, FunctionType(IntegerType, IntegerType)),
     "+": FunctionType(IntegerType, FunctionType(IntegerType, IntegerType)),
+    "*": FunctionType(IntegerType, FunctionType(IntegerType, IntegerType)),
+    "/": FunctionType(IntegerType, FunctionType(IntegerType, IntegerType)),
+    "or": FunctionType(BoolType, FunctionType(BoolType, BoolType)),
+    "&": FunctionType(BoolType, FunctionType(BoolType, BoolType)),
+    "==": FunctionType(type4, FunctionType(type4, BoolType)),
+    "!=": FunctionType(type5, FunctionType(type5, BoolType)),
+    "<": FunctionType(type5, FunctionType(type5, BoolType)),
+    ">": FunctionType(type6, FunctionType(type6, BoolType)),
+    ">=": FunctionType(type7, FunctionType(type7, BoolType)),
+    "<=": FunctionType(type8, FunctionType(type8, BoolType)),
     0: IntegerType,
     1: BoolType,
     2: StringType,
@@ -191,5 +206,6 @@ export function inferOnce(exp: AstNode) {
 export function inferWithPersistentEnv(exp: AstNode) {
     let resultContext = infer(exp, runningEnv, new Set())
     runningEnv = resultContext.env
+    console.log(runningEnv)
     return resultContext.type
 }
