@@ -213,6 +213,5 @@ export function inferOnce(exp: AstNode) {
 export function inferWithPersistentEnv(exp: AstNode) {
     let resultContext = infer(exp, runningEnv, new Set())
     runningEnv = resultContext.env
-    console.log(runningEnv)
     return resultContext.type
 }
