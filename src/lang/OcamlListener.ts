@@ -18,6 +18,8 @@ import { LambdaContext } from "./OcamlParser";
 import { ApplicationContext } from "./OcamlParser";
 import { LetExprContext } from "./OcamlParser";
 import { GlobalLetExprContext } from "./OcamlParser";
+import { LetRecExprContext } from "./OcamlParser";
+import { GlobalLetRecExprContext } from "./OcamlParser";
 import { Value_nameContext } from "./OcamlParser";
 import { Operator_nameContext } from "./OcamlParser";
 import { Infix_opContext } from "./OcamlParser";
@@ -230,6 +232,32 @@ export interface OcamlListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitGlobalLetExpr?: (ctx: GlobalLetExprContext) => void;
+
+	/**
+	 * Enter a parse tree produced by the `letRecExpr`
+	 * labeled alternative in `OcamlParser.expr`.
+	 * @param ctx the parse tree
+	 */
+	enterLetRecExpr?: (ctx: LetRecExprContext) => void;
+	/**
+	 * Exit a parse tree produced by the `letRecExpr`
+	 * labeled alternative in `OcamlParser.expr`.
+	 * @param ctx the parse tree
+	 */
+	exitLetRecExpr?: (ctx: LetRecExprContext) => void;
+
+	/**
+	 * Enter a parse tree produced by the `globalLetRecExpr`
+	 * labeled alternative in `OcamlParser.expr`.
+	 * @param ctx the parse tree
+	 */
+	enterGlobalLetRecExpr?: (ctx: GlobalLetRecExprContext) => void;
+	/**
+	 * Exit a parse tree produced by the `globalLetRecExpr`
+	 * labeled alternative in `OcamlParser.expr`.
+	 * @param ctx the parse tree
+	 */
+	exitGlobalLetRecExpr?: (ctx: GlobalLetRecExprContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `OcamlParser.value_name`.

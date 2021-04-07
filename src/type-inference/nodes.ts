@@ -29,9 +29,18 @@ export class Let implements AstNode {
     toString() { return `(let ${this.variable} = ${this.value} in ${this.body})` }
 }
 
+export class Letrec implements AstNode {
+    constructor(public variable: Id, public value: AstNode, public body: AstNode) { }
+    toString() { return `(let rec ${this.variable} = ${this.value} in ${this.body})` }
+}
+
 export class GlobalLet implements AstNode {
     constructor(public variable: Id, public value: AstNode) { }
     toString() { return `(let ${this.variable} = ${this.value})` }
+}
+export class GlobalLetrec implements AstNode {
+    constructor(public variable: Id, public value: AstNode) { }
+    toString() { return `(let rec ${this.variable} = ${this.value})` }
 }
 
 export class BinaryOp implements AstNode {

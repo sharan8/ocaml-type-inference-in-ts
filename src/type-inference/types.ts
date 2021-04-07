@@ -17,7 +17,10 @@ export class TypeVariable implements AstType {
     _name: string
     instantiated: boolean
     get name() {
-        return this._name !== "unassigned" ? this._name : (this._name = 't' + (TypeVariable.lastNameIndex ++))
+        if (this._name === "unassigned") {
+            this._name = "t" + TypeVariable.lastNameIndex++
+        }
+        return this._name
     }
 
     static lastNameIndex = 0
