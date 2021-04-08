@@ -4,6 +4,8 @@ To start, run: `yarn install` and then `yarn start`.
 
 The OCaml Chapter 1 BNF is in `/src/lang/Ocaml.g4`. If you would like to update the BNF, add to it and run `yarn antlr4ts` to generate the new visitor and parser.
 
+Temporary host: https://tinyurl.com/ocamltypechecker, https://silly-perlman-3784e5.netlify.app/
+
 References:
 
 Principal type-schemes for functional programs (Damas, Milner): http://steshaw.org/hm/milner-damas.pdf
