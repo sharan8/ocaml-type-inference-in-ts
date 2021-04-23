@@ -1,7 +1,19 @@
 /* tslint:disable:max-classes-per-file */
 
 import { InferenceError, UnificationError } from "./errors"
-import { Apply, AstNode, basicType, BinaryOp, GlobalLet, Id, Lambda, Let, Letrec } from "./nodes"
+import { 
+    Apply, 
+    AstNode, 
+    basicType, 
+    BinaryOp, 
+    GlobalLet, 
+    Id, 
+    Lambda, 
+    Let, 
+    Letrec, 
+    Conditional,
+    While
+} from "./nodes"
 import { AstType, TypeVariable, TypeOperator } from "./types"
 
 class TypeEnv {
@@ -76,6 +88,39 @@ export function infer(node: AstNode, env: TypeEnv, nonGeneric: Set<AstType>): As
             valType = infer(node.value, newEnv, newGeneric).type
             unify(newType, valType)
         return infer(node.body, newEnv, nonGeneric)
+    }
+    else if (node instanceof Conditional) {
+        let conditionContext = infer(node.condition, env, nonGeneric);
+        let conditionType = conditionContext.type
+
+        // first check if the condition is of type bool
+        checkConditionTypeInConditional(conditionType)
+
+        // case where there is no alternative
+        if (node.alternative === undefined) {
+            return infer(node.consequent, env, nonGeneric)
+        }
+
+        // next check if the consequent and alternative are of the same type
+        let consequentType = infer(node.consequent, env, nonGeneric).type
+        let alternativeType = infer(node.alternative, env, nonGeneric).type
+        if (areSimilarTypes(consequentType, alternativeType)) {
+            return new TypeEnvPair(consequentType, env)
+        }
+
+        // return a polymorphic type
+        let newType = new TypeVariable()
+        return new TypeEnvPair(newType, env)
+    }
+    else if (node instanceof While) {
+        let conditionContext = infer(node.condition, env, nonGeneric);
+        let conditionType = conditionContext.type
+
+        // first check if the condition is of type bool
+        checkConditionTypeInConditional(conditionType)
+
+        // return type of the body
+        return infer(node.body, env, nonGeneric)
     }
     else {
         throw new InferenceError('unhandled syntax node ' + node)
@@ -184,6 +229,7 @@ const GlobalEnv = new TypeEnv({
     pred: FunctionType(IntegerType, IntegerType),
     times: FunctionType(IntegerType, FunctionType(IntegerType, IntegerType)),
     "+": FunctionType(IntegerType, FunctionType(IntegerType, IntegerType)),
+    "-": FunctionType(IntegerType, FunctionType(IntegerType, IntegerType)),
     "*": FunctionType(IntegerType, FunctionType(IntegerType, IntegerType)),
     "/": FunctionType(IntegerType, FunctionType(IntegerType, IntegerType)),
     "or": FunctionType(BoolType, FunctionType(BoolType, BoolType)),
@@ -214,4 +260,30 @@ export function inferWithPersistentEnv(exp: AstNode) {
     let resultContext = infer(exp, runningEnv, new Set())
     runningEnv = resultContext.env
     return resultContext.type
+}
+
+function checkConditionTypeInConditional(type: AstType) {
+    let t = prune(type);
+    if (t instanceof TypeOperator) {
+        if (t.name !== "bool") {
+            throw new InferenceError('condition not of bool type in conditional: ' + t.name)
+        }
+    }
+    else if (t instanceof TypeVariable) {
+        throw new InferenceError('condition not of bool type in conditional')
+    }
+}
+
+function areSimilarTypes(type1: AstType, type2: AstType) {
+    let t1 = prune(type1)
+    let t2 = prune(type2)
+
+    if (t1 instanceof TypeOperator && t2 instanceof TypeOperator) {
+        return t1.name === t2.name
+    }
+    else if (t1 instanceof TypeVariable) {
+        return t1 === t2
+    }
+
+    return false
 }

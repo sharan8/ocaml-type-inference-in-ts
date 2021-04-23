@@ -50,7 +50,10 @@ class ExpressionGenerator extends AbstractParseTreeVisitor<AstNode> implements O
     return new BinaryOp(ctx._operator.text, this.visit(ctx._left), this.visit(ctx._right)) 
   }
   visitConditionalExpr(ctx: ConditionalExprContext): AstNode {
-    return new Conditional(this.visit(ctx._condition), this.visit(ctx._consequent), this.visit(ctx._alternative))
+    if (ctx._alternative) {
+      return new Conditional(this.visit(ctx._condition), this.visit(ctx._consequent), this.visit(ctx._alternative))
+    }
+    return new Conditional(this.visit(ctx._condition), this.visit(ctx._consequent))
   }
   visitWhileLoop(ctx: WhileLoopContext): AstNode {
     return new While(this.visit(ctx._condition), this.visit(ctx._body))
