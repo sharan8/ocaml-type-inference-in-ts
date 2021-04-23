@@ -62,7 +62,7 @@ function App() {
           }}
         >
           <h1>OCaml Type Checker</h1>
-          <p>Hello there! Welcome to our OCaml type checker based on {' '}
+          <p>Welcome to our OCaml type checker based on {' '}
             <a 
               href="https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system" 
               target="_blank"
