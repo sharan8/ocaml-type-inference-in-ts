@@ -77,6 +77,24 @@ export function infer(node: AstNode, env: TypeEnv, nonGeneric: Set<AstType>): As
             unify(newType, valType)
         return infer(node.body, newEnv, nonGeneric)
     }
+    else if (node instanceof Conditional) {
+        let conditionContext = infer(node.condition, env, nonGeneric);
+        let conditionType = conditionContext.type
+
+        // first check if the condition is of type bool
+        checkConditionTypeInConditional(conditionType)
+
+        // next check if the consequent and alternative are of the same type
+        let consequentType = infer(node.consequent, env, nonGeneric).type
+        let alternativeType = infer(node.alternative, env, nonGeneric).type
+        if (areSimilarTypes(consequentType, alternativeType)) {
+            return new TypeEnvPair(consequentType, env)
+        }
+
+        // return a polymorphic type
+        let newType = new TypeVariable()
+        return new TypeEnvPair(newType, env)
+    }
     else {
         throw new InferenceError('unhandled syntax node ' + node)
     }
