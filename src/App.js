@@ -36,13 +36,25 @@ function App() {
               window.open('https://ocaml.org/learn/taste.html', "_blank")
               window.focus()
             },
+            'github': () => {
+              window.open('https://github.com/gb3h/ocaml-type-inference-in-ts', "_blank")
+              window.focus()
+            },
+            'source': () => {
+              window.open('https://github.com/gb3h/ocaml-type-inference-in-ts', "_blank")
+              window.focus()
+            },
+            'creators': () => 'Gabriel Yeo and Sharan Thangavel from the National University of Singapore',
             'baby-camels': () => {
               window.open('https://www.youtube.com/watch?v=o3x_b95KspA', "_blank")
               window.focus()
-            }
+            },
           }}
           descriptions={{
             'ocaml-help': 'open ocaml examples page',
+            'github': 'open github repository for this project',
+            'source': 'open github repository for this project',
+            'creators': 'list names of project creators',
             'baby-camels': 'easter egg :P'
           }}
           commandPassThrough={cmd => {
