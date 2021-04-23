@@ -1,7 +1,18 @@
 /* tslint:disable:max-classes-per-file */
 
 import { InferenceError, UnificationError } from "./errors"
-import { Apply, AstNode, basicType, BinaryOp, GlobalLet, Id, Lambda, Let, Letrec } from "./nodes"
+import { 
+    Apply, 
+    AstNode, 
+    basicType, 
+    BinaryOp, 
+    GlobalLet, 
+    Id, 
+    Lambda, 
+    Let, 
+    Letrec, 
+    Conditional 
+} from "./nodes"
 import { AstType, TypeVariable, TypeOperator } from "./types"
 
 class TypeEnv {
