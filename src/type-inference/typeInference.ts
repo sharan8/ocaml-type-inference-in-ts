@@ -184,6 +184,7 @@ const GlobalEnv = new TypeEnv({
     pred: FunctionType(IntegerType, IntegerType),
     times: FunctionType(IntegerType, FunctionType(IntegerType, IntegerType)),
     "+": FunctionType(IntegerType, FunctionType(IntegerType, IntegerType)),
+    "-": FunctionType(IntegerType, FunctionType(IntegerType, IntegerType)),
     "*": FunctionType(IntegerType, FunctionType(IntegerType, IntegerType)),
     "/": FunctionType(IntegerType, FunctionType(IntegerType, IntegerType)),
     "or": FunctionType(BoolType, FunctionType(BoolType, BoolType)),
