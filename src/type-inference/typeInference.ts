@@ -12,7 +12,8 @@ import {
     Let, 
     Letrec, 
     Conditional,
-    While
+    While,
+    For
 } from "./nodes"
 import { AstType, TypeVariable, TypeOperator } from "./types"
 
@@ -120,6 +121,14 @@ export function infer(node: AstNode, env: TypeEnv, nonGeneric: Set<AstType>): As
         checkConditionTypeInConditional(conditionType)
 
         // return type of the body
+        return infer(node.body, env, nonGeneric)
+    } else if (node instanceof For) {
+        // check that the binding and end are of the same type
+        let bindingType = infer(node.binding, env, nonGeneric).type
+        let endType = infer(node.end, env, nonGeneric).type
+        if (!areSimilarTypes(bindingType, endType)) {
+            throw new InferenceError('binding and end are of different types')
+        }
         return infer(node.body, env, nonGeneric)
     }
     else {
