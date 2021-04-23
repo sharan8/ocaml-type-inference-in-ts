@@ -247,3 +247,16 @@ function checkConditionTypeInConditional(type: AstType) {
     }
 }
 
+function areSimilarTypes(type1: AstType, type2: AstType) {
+    let t1 = prune(type1)
+    let t2 = prune(type2)
+
+    if (t1 instanceof TypeOperator && t2 instanceof TypeOperator) {
+        return t1.name === t2.name
+    }
+    else if (t1 instanceof TypeVariable) {
+        return t1 === t2
+    }
+
+    return false
+}
