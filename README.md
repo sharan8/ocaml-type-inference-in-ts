@@ -19,7 +19,7 @@ Code related to the use of antlr4ts can be found in [src/lang](src/lang). This i
 - antlr4ts-generated lexer, parser, listener, and visitor files
 
 ### Parser
-[src/parser](src/parser) includes our main parse() method and the overridden visitor methods for each expression supported
+- [src/parser](src/parser) includes our main parse() method and the overridden visitor methods for each expression supported
 
 ### Type Inference
 The crux of the type inference mechanism can be found in [src/type-inference](src/type-inference). This includes the following:
