@@ -36,20 +36,32 @@ function App() {
               window.open('https://ocaml.org/learn/taste.html', "_blank")
               window.focus()
             },
+            'github': () => {
+              window.open('https://github.com/gb3h/ocaml-type-inference-in-ts', "_blank")
+              window.focus()
+            },
+            'source': () => {
+              window.open('https://github.com/gb3h/ocaml-type-inference-in-ts', "_blank")
+              window.focus()
+            },
+            'creators': () => 'Gabriel Yeo and Sharan Thangavel from the National University of Singapore',
             'baby-camels': () => {
               window.open('https://www.youtube.com/watch?v=o3x_b95KspA', "_blank")
               window.focus()
-            }
+            },
           }}
           descriptions={{
             'ocaml-help': 'open ocaml examples page',
+            'github': 'open github repository for this project',
+            'source': 'open github repository for this project',
+            'creators': 'list names of project creators',
             'baby-camels': 'easter egg :P'
           }}
           commandPassThrough={cmd => {
             const inputString = cmd.join(" ")
             return handleUserInput(inputString)
           }}
-          msg='Input any expression in OCaml below. For help with OCaml, try `ocaml-help`. E.g. `fun a -> fun b -> fun c -> (a c (b c))`'
+          msg='Input an expression in OCaml below. Try `help` or `fun a -> fun b -> fun c -> (a c (b c))`'
         />)
   }
 
@@ -62,7 +74,7 @@ function App() {
           }}
         >
           <h1>OCaml Type Checker</h1>
-          <p>Hello there! Welcome to our OCaml type checker based on {' '}
+          <p>Welcome to our OCaml type checker based on {' '}
             <a 
               href="https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system" 
               target="_blank"
