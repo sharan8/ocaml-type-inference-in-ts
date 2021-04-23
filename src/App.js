@@ -49,7 +49,7 @@ function App() {
             const inputString = cmd.join(" ")
             return handleUserInput(inputString)
           }}
-          msg='Input any expression in OCaml below. For help with OCaml, try `ocaml-help`. E.g. `fun a -> fun b -> fun c -> (a c (b c))`'
+          msg='Input an expression in OCaml below. Try `help` or `fun a -> fun b -> fun c -> (a c (b c))`'
         />)
   }
 
