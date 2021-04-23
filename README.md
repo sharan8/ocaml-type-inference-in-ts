@@ -23,11 +23,11 @@ To try a live version of our project, go to: https://tinyurl.com/ocamltypechecke
 ## How you can contribute
 
 If you would like to expand the current supported sublanguage of OCaml: 
-1. Have a look at the OCaml Chapter 1 BNF in `/src/lang/Ocaml.g4`
+1. Have a look at the OCaml Chapter 1 BNF in [`/src/lang/Ocaml.g4`](src/lang/Ocaml.g4)
 2. To update the BNF, add to it and run `yarn antlr4ts` to generate the new visitor, listener and parser files. 
-3. The visitors or listeners can then be overridden to suit your intended parse outcomes. This can be observed in `src/parser/parser.ts`
-4. Create new nodes as necessary in `src/type-inference/nodes.ts`
-5. Handle these new nodes in the core of the type inference algorithm in the `infer()` method at `src/type-inference/typeInference.ts`
+3. The visitors or listeners can then be overridden to suit your intended parse outcomes. This can be observed in [`src/parser/parser.ts`](src/parser/parser.ts)
+4. Create new nodes as necessary in [`src/type-inference/nodes.ts`](src/type-inference/nodes.ts)
+5. Handle these new nodes in the core of the type inference algorithm in the `infer()` method at [`src/type-inference/typeInference.ts`](src/type-inference/typeInference.ts)
 
 
 ## References
