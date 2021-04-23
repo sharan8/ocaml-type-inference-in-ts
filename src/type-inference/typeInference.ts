@@ -11,7 +11,8 @@ import {
     Lambda, 
     Let, 
     Letrec, 
-    Conditional 
+    Conditional,
+    While
 } from "./nodes"
 import { AstType, TypeVariable, TypeOperator } from "./types"
 
@@ -105,6 +106,16 @@ export function infer(node: AstNode, env: TypeEnv, nonGeneric: Set<AstType>): As
         // return a polymorphic type
         let newType = new TypeVariable()
         return new TypeEnvPair(newType, env)
+    }
+    else if (node instanceof While) {
+        let conditionContext = infer(node.condition, env, nonGeneric);
+        let conditionType = conditionContext.type
+
+        // first check if the condition is of type bool
+        checkConditionTypeInConditional(conditionType)
+
+        // return type of the body
+        return infer(node.body, env, nonGeneric)
     }
     else {
         throw new InferenceError('unhandled syntax node ' + node)
