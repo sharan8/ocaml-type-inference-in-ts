@@ -54,8 +54,13 @@ export class Sequence implements AstNode {
 }
 
 export class Conditional implements AstNode {
-    constructor(public condition: AstNode, public consequent: AstNode, public alternative: AstNode) { }
-    toString() { return `(if ${this.condition} then ${this.consequent} else ${this.alternative})` }
+    constructor(public condition: AstNode, public consequent: AstNode, public alternative?: AstNode) { }
+    toString() { 
+        if (this.alternative !== undefined) {
+            return `(if ${this.condition} then ${this.consequent} else ${this.alternative})` 
+        }
+        return `(if ${this.condition} then ${this.consequent})`
+    }
 }
 
 export class While implements AstNode {
