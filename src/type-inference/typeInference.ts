@@ -216,3 +216,16 @@ export function inferWithPersistentEnv(exp: AstNode) {
     runningEnv = resultContext.env
     return resultContext.type
 }
+
+function checkConditionTypeInConditional(type: AstType) {
+    let t = prune(type);
+    if (t instanceof TypeOperator) {
+        if (t.name !== "bool") {
+            throw new InferenceError('condition not of bool type in conditional: ' + t.name)
+        }
+    }
+    else if (t instanceof TypeVariable) {
+        throw new InferenceError('condition not of bool type in conditional')
+    }
+}
+
