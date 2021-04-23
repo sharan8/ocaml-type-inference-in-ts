@@ -1,0 +1,31 @@
+\section{Introduction to OCaml}
+
+\subsection{About OCaml}
+OCaml is an industrial-strength general purpose programming language that has an emphasis on expressiveness and safety. It supports functional, imperative, and object-oriented paradigms, and we are most interested in the functional paradigm. While is statically type-checked, it removes redundancy from the point of view of the programmer by not requiring explicit type specification of function parameters, local variables, etc. This allows us sufficient space to experiment with the implementation of a type inference algorithm.
+  
+\subsection{Supported Grammar}
+Our current grammar contains support the following expressions in OCaml, specified in ANTLR4 g4 form:
+
+\footnotesize
+\begin{Verbatim}[tabsize=4]
+expr:
+	value_name
+	| constant_integer	
+	| constant_boolean		
+	| constant_string	
+	| '(' inner = expr ')'
+	| PREFIX_SYMBOL exp
+	| left = expr operator = infix_op right = expr	
+	| 'if' condition = expr 'then' consequent = expr ('else' alternative = expr)?
+	| 'while' condition = expr 'do' body = expr 'done'
+	| 'for' name = value_name '=' binding = expr ('to' | 'downto') end = expr 
+        'do' body = expr 'done'
+	| first = expr ';' second = expr
+	| 'fun' (params = parameter)+ '->' body = expr	
+	| fun = expr argument = expr
+	| 'let' name = pattern '=' binding = expr 'in' in_context = expr
+	| 'let' name = pattern '=' binding = expr
+	| 'let' 'rec' name = pattern '=' binding = expr 'in' in_context = expr
+	| 'let' 'rec' name = pattern '=' binding = expr	
+\end{Verbatim}
+\normalsize

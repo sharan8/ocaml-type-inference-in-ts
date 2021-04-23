@@ -1,0 +1,22 @@
+\section{Introduction}
+
+
+\subsection{Motivation}
+The overall objective of this project is to implement static type inference for OCaml in TypeScript. This project serves as a practical application of concepts and techniques learnt in the CS4215: Programming Language Implementation module and beyond. As students, it has allowed us to bridge the gap between theory-based formalism and functioning applications that serve a practical purpose. \\
+
+OCaml was chosen as a language because of our fascination with lambda calculus, as well as an interest in exploring a strongly-typed functional programming language from a type inference point of view. Prior to the start of this project, we had no experience with OCaml. Furthermore, TypeScript was chosen as a language of choice for the implementation as a typescript-based type checker for OCaml does not exist publicly based on our research. It also enables the project to be integrated with the Source Academy easily.
+
+\subsection{Introduction to Type Inference}
+Type inference refers to the automatic detection of the type of an expression in a formal language. It is a useful mechanism employed in the process of executing static type checking for a piece of code. Its primary benefit is that it removes redundancy from the point of view of the programmer, who no longer has to explicitly declare the type of every single term or expression. \\
+
+While type inference can be implemented using a naive basic approach where you visit each abstract syntax tree (AST) node and recursively infer types from the bottom-up, we chose the Hindley-Milner type system to infer types as it allows us to achieve more complete type inference. The former may struggle in cases where, for example, function parameter and return types are not explicitly specified in the function expression.
+
+\subsection{Scope of Project}
+The scope of this project includes the following, with respect to a subset of OCaml that we currently support:
+\begin{enumerate}
+    \item Parsing OCaml expressions into parse trees with the help of ANTLR4ts, a parser generator
+    \item In achieving the above, creating an ANTLR4 g4 file for OCaml as a community contribution
+    \item Implementing Hindley-Milner Algorithm W in TypeScript
+    \item Create a working REPL-like frontend to demonstrate our type inference output
+  \end{enumerate}
+

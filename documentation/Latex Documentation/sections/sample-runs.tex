@@ -1,0 +1,54 @@
+\section{Sample type checker runs}
+This sections contains some sample type checker runs, including the output of our algorithm. It is aimed at giving you an idea of what to expect as a result of executing the algorithm.
+
+\subsection{Basic Mathematical Operations}
+Our type checker support basic mathematical operations such as the following. As our scope is limited to types, we do not provide error outputs such as 'Division by Zero', which require some semantic understanding of the code being analyzed.
+
+\begin{verbatim}
+99 + 999 * 999;;
+> int
+
+999 / 10 ^ 2;;
+> int
+\end{verbatim}
+
+\subsection{Scoped and Global let}
+The let construct, simply put, allows us to give names to values. The let expression is one of the key highlights when it comes to type inference. It is closely related to polymorphic types, and saves users of the programming language the associated challenges when working with subexpressions that may be tedious to rewrite, or expensive to repeat. In our project we defined the scoped and global let separately, as detailed in section 4.7. The scoped let expressions includes a scope after \verb|in| where the subexpression can be used easily. Here are examples of scoped and global let respectively:
+
+\begin{verbatim}
+let sq = (fun x -> x*x) in sq(999) + 99 + 9;;
+> int
+
+let pw = fun x -> x^x;;
+> t0 -> t0
+pw(678);;
+> int
+\end{verbatim}
+
+\subsection{Combinatorics}
+Borrowing from combinatorics, the following combinations of the expressions s and k make for interesting examples that show the complex parsing of function applications. Our output is consistent with the expected output in combinatorics:
+
+\begin{verbatim}
+let s = fun a -> fun b -> fun c -> (a c (b c));;
+> ((t4 -> (t5 -> t6)) -> ((t4 -> t5) -> (t4 -> t6)))
+
+let k = fun x -> fun y -> x;;
+> (t7 -> (t8 -> t7))
+
+s k k;;
+> (t9 -> t9)
+
+s (k s) k;;
+> ((t10 -> t11) -> ((t12 -> t10) -> (t12 -> t11)))
+\end{verbatim}
+
+\subsection{Equality Operator}
+The equality operator evaluates two operands of similar. If a mismatched type operand is specified, we receive a Unification Error as the unification process is unable to proceed further.
+
+\begin{verbatim}
+true == true;;
+> bool
+
+"true" == true
+> Unification Error: Cannot unify: string != bool
+\end{verbatim}
