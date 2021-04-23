@@ -96,6 +96,11 @@ export function infer(node: AstNode, env: TypeEnv, nonGeneric: Set<AstType>): As
         // first check if the condition is of type bool
         checkConditionTypeInConditional(conditionType)
 
+        // case where there is no alternative
+        if (node.alternative === undefined) {
+            return infer(node.consequent, env, nonGeneric)
+        }
+
         // next check if the consequent and alternative are of the same type
         let consequentType = infer(node.consequent, env, nonGeneric).type
         let alternativeType = infer(node.alternative, env, nonGeneric).type
